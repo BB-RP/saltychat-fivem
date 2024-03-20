@@ -209,21 +209,20 @@ namespace SaltyClient
             this._changeHandlerCookies.Add(API.AddStateBagChangeHandler(State.SaltyChat_IsUsingMegaphone, null, new Action<string, string, dynamic, int, bool>(this.MegaphoneChangeHandler)));
 
             VoiceManager.PlayerList = this.Players;
-            
-            this.Init().GetAwaiter().GetResult();
+
+            this.Init();
         }
         #endregion
 
 
-        #region MongodbClient
+        #region Eyxp
 
         private bool _canChangeVoiceRange = true;
 
-        private Task Init()
+        private void Init()
         { 
             this.Exports.Add("SetVoiceRange", new Action<float, bool>(this.SetVoiceRange));
             this.Exports.Add("SetCanChangeVoiceRange", new Action<bool>(this.SetCanChangeVoiceRange));
-            return Task.CompletedTask;
         }
 
         private void SetCanChangeVoiceRange(bool change)
