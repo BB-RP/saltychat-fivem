@@ -209,7 +209,40 @@ namespace SaltyClient
             this._changeHandlerCookies.Add(API.AddStateBagChangeHandler(State.SaltyChat_IsUsingMegaphone, null, new Action<string, string, dynamic, int, bool>(this.MegaphoneChangeHandler)));
 
             VoiceManager.PlayerList = this.Players;
+            
+            this.Init().GetAwaiter().GetResult();
         }
+        #endregion
+
+
+        #region MongodbClient
+
+        private bool _canChangeVoiceRange = true;
+
+        private Task Init()
+        { 
+            this.Exports.Add("SetVoiceRange", new Action<float, bool>(this.SetVoiceRange));
+            this.Exports.Add("SetCanChangeVoiceRange", new Action<bool>(this.SetCanChangeVoiceRange));
+            return Task.CompletedTask;
+        }
+
+        private void SetCanChangeVoiceRange(bool change)
+        {
+            this._canChangeVoiceRange = change;
+        }
+
+
+        private void SetVoiceRange(float range, bool notify)
+        {
+            this._voiceRange = range;
+            Game.Player.State.Set(State.SaltyChat_VoiceRange, this._voiceRange, true);
+            if (notify)
+            {
+                TriggerEvent("bbrp_notify", "info", "BBRP - SaltyChat",
+                    "Deine VoiceRange wurde auf '" + range + "' geändert!");
+            }
+        }
+        
         #endregion
 
         #region Events
@@ -1205,6 +1238,12 @@ namespace SaltyClient
         /// </summary>
         public void ToggleVoiceRange()
         {
+            if (!_canChangeVoiceRange)
+            {
+                TriggerEvent("bbrp_notify", "error", "BBRP - Saltychat",
+                    "Du kannst deine Sprachweite aktuell nicht verändern!");
+                return;
+            }
             int index = Array.IndexOf(this.Configuration.VoiceRanges, this.VoiceRange);
 
             if (index < 0)
