@@ -743,26 +743,7 @@ namespace SaltyServer
                 if (++counter > 5)
                     return null;
                 
-                string guidString;
-                try
-                {
-                    guidString = Guid.NewGuid().ToString().Replace("-", "");
-                }
-                catch (Exception ex)
-                {
-                    guidString = "#8956+1";
-                }
-                
-                if (name != null)
-                {
-                    name = Regex.Replace(name, @"(\{serverid\})", player.Handle ?? String.Empty);
-                    name = Regex.Replace(name, @"(\{playername\})", player.Name ?? String.Empty);
-                    name = Regex.Replace(name, @"(\{guid\})", guidString);
-                }
-                else
-                {
-                    name = "BBRP - #8956+2";
-                }
+                name = Regex.Replace(name, @"(\{serverid\})", player.Handle ?? DateTime.Now.Millisecond.ToString());
 
                 if (name.Length > 30)
                     name = name.Remove(29, name.Length - 30);
