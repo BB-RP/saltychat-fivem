@@ -742,10 +742,27 @@ namespace SaltyServer
             {
                 if (++counter > 5)
                     return null;
-
-                name = Regex.Replace(name, @"(\{serverid\})", player.Handle);
-                name = Regex.Replace(name, @"(\{playername\})", player.Name ?? String.Empty);
-                name = Regex.Replace(name, @"(\{guid\})", Guid.NewGuid().ToString().Replace("-", ""));
+                
+                string guidString = String.Empty;
+                try
+                {
+                    guidString = Guid.NewGuid().ToString().Replace("-", "");
+                }
+                catch (Exception ex)
+                {
+                    guidString = "#ERROR";
+                }
+                
+                if (name != null)
+                {
+                    name = Regex.Replace(name, @"(\{serverid\})", player.Handle ?? String.Empty);
+                    name = Regex.Replace(name, @"(\{playername\})", player.Name ?? String.Empty);
+                    name = Regex.Replace(name, @"(\{guid\})", guidString);
+                }
+                else
+                {
+                    name = "BBRP - #ERROR";
+                }
 
                 if (name.Length > 30)
                     name = name.Remove(29, name.Length - 30);
