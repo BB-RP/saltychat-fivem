@@ -743,14 +743,14 @@ namespace SaltyServer
                 if (++counter > 5)
                     return null;
                 
-                string guidString = String.Empty;
+                string guidString;
                 try
                 {
                     guidString = Guid.NewGuid().ToString().Replace("-", "");
                 }
                 catch (Exception ex)
                 {
-                    guidString = "#ERROR";
+                    guidString = "#8956+1";
                 }
                 
                 if (name != null)
@@ -761,7 +761,7 @@ namespace SaltyServer
                 }
                 else
                 {
-                    name = "BBRP - #ERROR";
+                    name = "BBRP - #8956+2";
                 }
 
                 if (name.Length > 30)
